@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ .Values.app }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.app }}
+
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app }}
+        opscruisePerimeter: {{ .Values.opscruisePerimeter }}
+        opscruiseGroup: {{ .Values.opscruiseGroup }}
+        opscruiseProduct: {{ .Values.opscruiseProduct }}
+        opscruiseStream: {{ .Values.opscruiseStream }}
+
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+          - name: LOGLEVEL
+            value: "{{ .Values.env.lvalue }}"
+        envFrom:
+          - secretRef:
+              name: {{ .Values.envFrom.secretRefname }}
+
+        ports:
+        - containerPort: {{ .Values.ports.containerPort }}
+
+        volumeMounts:
+        - name: {{ .Values.volumeMounts.name }}
+          mountPath: {{ .Values.volumeMounts.mountPath }}
+
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecrets.name }}
+
+      volumes:
+      - name: {{ .Values.volumeMounts.name }}
+        secret:
+          secretName: {{ .Values.secret.secretName }}
+
+      restartPolicy: {{ .Values.restartPolicy }}

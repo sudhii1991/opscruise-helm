@@ -1,0 +1,44 @@
+apiVersion: v2
+name: opscruise
+description: A Helm chart for OpsCruise and all of its components
+type: application
+version: 0.1.0
+appVersion: 1.1.0
+
+dependencies:
+    -   name: awsgw
+        condition: awsgw.enabled
+        tags:
+            -   opscruise
+
+    -   name: k8sgw
+        condition: k8sgw.enabled
+        tags:
+            -   opscruise
+
+    -   name: promgw
+        condition: promgw.enabled
+        tags:
+            -   opscruise
+
+    -   name: opscruise-node-exporter
+        condition: opscruise-node-exporter.enabled
+        tags:
+            -   opscruise
+
+    -   name: cadvisor
+        condition: cadvisor.enabled
+        tags:
+            -   collectors
+
+    -   name: kube-state-metrics
+        condition: kube-state-metrics.enabled
+        tags:
+            -   collectors
+
+    -   name: prometheus
+        condition: prometheus.enabled
+        tags:
+            -   collectors
+
+        

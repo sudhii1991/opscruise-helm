@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-exporter
+  namespace: opscruise
+  labels:
+    k8s-app: node-exporter
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+    version: v0.15.2
+spec:
+  selector:
+    matchLabels:
+      k8s-app: node-exporter
+      version: v0.15.2
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        k8s-app: node-exporter
+        version: v0.15.2
+        opscruisePerimeter: opscruise
+        opscruiseGroup: exporters
+        opscruiseProduct: NodeExporter
+        opscruiseStream: opscruise
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9100"
+    spec:
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+      containers:
+      - name: prometheus-node-exporter
+        image: "opscruiseindia/oc-node-exporter:node-exporter1.1.0"
+        imagePullPolicy: Always
+        securityContext:
+          privileged: true
+          capabilities:
+            add: ["NET_ADMIN", "SYS_ADMIN"]
+        args:
+        - --path.procfs=/host/proc
+        - --path.sysfs=/host/sys
+        - --web.max-requests=1
+        - --collector.conntrackext.forward-and-reverse-path-packets
+        ports:
+        - name: metrics
+          containerPort: 9100
+          hostPort: 9100
+        volumeMounts:
+        - name: dev
+          mountPath: /host/dev
+        - name: proc
+          mountPath: /host/proc
+        - name: sys
+          mountPath: /host/sys
+        - name: rootfs
+          mountPath: /rootfs
+        - mountPath: /lib/modules
+          name: lib-modules
+        - mountPath: /boot
+          name: boot
+        resources:
+          limits:
+            memory: 600Mi
+          requests:
+            cpu: 200m
+            memory: 300Mi
+      imagePullSecrets:
+      - name: oc-docker-creds
+
+      hostNetwork: true
+      hostPID: true
+      volumes:
+      - name: proc
+        hostPath:
+          path: /proc
+      - name: dev
+        hostPath:
+          path: /dev
+      - name: sys
+        hostPath:
+          path: /sys
+      - name: rootfs
+        hostPath:
+          path: /
+      - name: lib-modules
+        hostPath:
+          path: /lib/modules
+      - name: boot
+        hostPath:
+          path: /boot
