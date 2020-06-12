@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: awsgw-deployment-<AWS_REGION>
+  namespace: opscruise
+  labels:
+    app: awsgw
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: awsgw
+
+  template:
+    metadata:
+      labels:
+        app: awsgw
+        opscruisePerimeter: opscruise
+        opscruiseGroup: gateways
+        opscruiseProduct: awsGW
+        opscruiseStream: opscruise
+
+    spec:
+      containers:
+        - name: awsgw-container
+          image: opscruiseindia/oc-awsgw:awsgw1.1.0
+          imagePullPolicy: Always
+          env:
+            - name: LOGLEVEL
+              value: "warning"
+            - name: AWS_REGION
+              value: <AWS_REGION>
+          envFrom:
+            - secretRef:
+                name: oc-gw-creds
+            - secretRef:
+                name: oc-aws-credential
+
+          volumeMounts:
+            - name: awsgw-certs-volume
+              mountPath: /var/opscruise/certs
+
+          resources:
+            limits:
+              cpu: 500m
+              memory: 250Mi
+            requests:
+              cpu: 200m
+              memory: 50Mi
+
+      imagePullSecrets:
+        - name: oc-docker-creds
+
+      volumes:
+      - name: awsgw-certs-volume
+        secret:
+          secretName: oc-gw-certs
+
+      restartPolicy: Always

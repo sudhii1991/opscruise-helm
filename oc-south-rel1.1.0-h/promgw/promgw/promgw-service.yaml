@@ -1,0 +1,18 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: promgw-service
+  namespace: opscruise
+  labels:
+    opscruisePerimeter: opscruise
+    opscruiseGroup: gateways
+    opscruiseProduct: promGW
+    opscruiseStream: opscruise
+spec:
+  selector:
+    app: promgw
+
+  ports:
+    - protocol: TCP
+      port: 8585
+      targetPort: 8080

@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8sgw-deployment
+  namespace: opscruise
+  labels:
+    app: k8sgw
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8sgw
+
+  template:
+    metadata:
+      labels:
+        app: k8sgw
+        opscruisePerimeter: opscruise
+        opscruiseGroup: gateways
+        opscruiseProduct: k8sGW
+        opscruiseStream: opscruise
+
+    spec:
+      containers:
+      - name: k8sgw-container
+        image: opscruiseindia/oc-k8sgw:k8sgw1.1.0
+        imagePullPolicy: Always
+        env:
+          - name: LOGLEVEL
+            value: "warning"
+        envFrom:
+          - secretRef:
+              name: oc-gw-creds
+
+        volumeMounts:
+          - name: k8s-certs-volume
+            mountPath: /var/opscruise/certs
+
+        resources:
+          limits:
+            cpu: 500m
+            memory: 250Mi
+          requests:
+            cpu: 200m
+            memory: 50Mi
+
+      imagePullSecrets:
+        - name: oc-docker-creds
+
+      volumes:
+      - name: k8s-certs-volume
+        secret:
+          secretName: oc-gw-certs
+
+      restartPolicy: Always

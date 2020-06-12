@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    k8s-app: {{ .Values.k8sapp }}
+  name: {{ .Values.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      k8s-app: {{ .Values.k8sapp }}
+  template:
+    metadata:
+      labels:
+        k8s-app: {{ .Values.k8sapp }}
+        opscruiseGroup: {{ .Values.opscruiseGroup }}
+        opscruisePerimeter: {{ .Values.opscruisePerimeter }}
+        opscruiseProduct: {{ .Values.opscruiseProduct }}
+        opscruiseStream: {{ .Values.opscruiseStream }}
+    spec:
+      containers:
+        -
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          name: {{ .Values.name }}
+          ports:
+            -
+              containerPort: {{ .Values.ports.containerPort1 }}
+              name: {{ .Values.ports.name1 }}
+            -
+              containerPort: {{ .Values.ports.containerPort2 }}
+              name: {{ .Values.ports.name2 }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.readinessProbe.path }}
+              port: {{ .Values.readinessProbe.port }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
