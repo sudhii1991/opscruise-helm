@@ -1,0 +1,50 @@
+apiVersion: v1
+entries:
+  opscruise:
+  - apiVersion: v2
+    appVersion: 1.1.0
+    created: "2020-06-12T19:54:21.677066446+05:30"
+    dependencies:
+    - condition: awsgw.enabled
+      name: awsgw
+      repository: ""
+      tags:
+      - opscruise
+    - condition: k8sgw.enabled
+      name: k8sgw
+      repository: ""
+      tags:
+      - opscruise
+    - condition: promgw.enabled
+      name: promgw
+      repository: ""
+      tags:
+      - opscruise
+    - condition: opscruise-node-exporter.enabled
+      name: opscruise-node-exporter
+      repository: ""
+      tags:
+      - opscruise
+    - condition: cadvisor.enabled
+      name: cadvisor
+      repository: ""
+      tags:
+      - collectors
+    - condition: kube-state-metrics.enabled
+      name: kube-state-metrics
+      repository: ""
+      tags:
+      - collectors
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: ""
+      tags:
+      - collectors
+    description: A Helm chart for OpsCruise and all of its components
+    digest: 9400e2be5eada6d6a9e13076b2bed7a82c27c636b4ee63be8c8bfae44c46274a
+    name: opscruise
+    type: application
+    urls:
+    - https://github.com/sudhii1991/opscruise-helm/opscruise-0.1.0.tgz
+    version: 0.1.0
+generated: "2020-06-12T19:54:21.670159444+05:30"
