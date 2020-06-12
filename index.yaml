@@ -3,7 +3,7 @@ entries:
   opscruise:
   - apiVersion: v2
     appVersion: 1.1.0
-    created: "2020-06-12T19:54:21.677066446+05:30"
+    created: "2020-06-13T00:17:20.368630397+05:30"
     dependencies:
     - condition: awsgw.enabled
       name: awsgw
@@ -45,6 +45,6 @@ entries:
     name: opscruise
     type: application
     urls:
-    - https://github.com/sudhii1991/opscruise-helm/opscruise-0.1.0.tgz
+    - https://sudhii1991.github.io/opscruise-helm/opscruise-0.1.0.tgz
     version: 0.1.0
-generated: "2020-06-12T19:54:21.670159444+05:30"
+generated: "2020-06-13T00:17:20.362132182+05:30"
