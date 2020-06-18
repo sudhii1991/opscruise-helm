@@ -47,11 +47,15 @@ auth.opscruise.io:8443
 ```
 
 #### Credentials
-You should have received an Environment Variables file (`oc-environment.env`)
+You should have received couple of yaml files opscruise-values.yaml and aws-values.yaml (`oc-environment.env`)
+add you aws credentials in the aws-values.yaml
 
 
 ### Installing the Chart
 To install the chart with release name `my-release`
+#### Add the opscruise repo:
+helm repo add opscruise-repo `opscruise-repo-url`
 ```sh
-helm upgrade --install my-release opscruise -n <your-namespace>
+helm upgrade --install my-release opscruise-repo/opscruise --namespace <your-namespace> --create-namespace -f values.yaml -f aws-secrets.yaml
 ```
+
